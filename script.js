@@ -1,9 +1,16 @@
+
 const canvas = document.getElementById('canvas1')
 const ctx = canvas.getContext('2d');
+const pts = document.getElementById('points')
+const strt = document.getElementById('start')
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
+let active = true;
+let points =  0 ;
 
 let particlesArray;
+let lineArray;
+
 
 // get mouse position
 let mouse = {
@@ -20,6 +27,9 @@ window.addEventListener('mousemove', function (event) {
 
 });
 
+
+
+
 // create particle
 
 class Particle {
@@ -35,7 +45,7 @@ class Particle {
     draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-        ctx.fillStyle = '#8C5523'
+        ctx.fillStyle = this.color
         ctx.fill();
         // The particle
     }
@@ -62,6 +72,7 @@ class Particle {
         this.x += this.directionX;
         this.y += this.directionY;
 
+
         //position of incidence(where in space does it hits)
         if (distance *8 <= this.size + mouse.radius) {
 
@@ -78,7 +89,9 @@ class Particle {
             this.directionX = Math.cos(reflectionAngle);
             this.directionY = Math.sin(reflectionAngle);
 
-        }
+            // Triggers game over functionality
+            gameOver()
+    }
 
 
 // draw particle
@@ -88,25 +101,40 @@ this.draw();
 }
 
 
-class line {
+// class Line {
 
-    constructor(x1, y1,x2,y2, size, color,opacity) {
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
-        this.size = size;
-        this.color = color;
-        this.opacity
+//     constructor(x1, y1,x2,y2, size, color,opacity) {
+//         this.x1 = x1;
+//         this.y1 = y1;
+//         this.x2 = x2;
+//         this.y2 = y2;
+//         this.size = size;
+//         this.color = color;
+//         this.opacity
 
-    }
-}
+//     }
+// }
+
+// class Line{
+// constructor(midpointx,midpointy,opacity){
+
+// this.midpointx = midpointx;
+// this.midpointy = midpointy;
+// this.opacity = opacity;
+
+// }
+// }
+// lineArray = []
+
 // draws a line between nearby particles
 function connect() {
     let opacityValue = 1
     for (let a = 0; a < particlesArray.length; a++) {
         for (let b = a; b < particlesArray.length; b++) {
 
+
+            //Essentially pythagorean theorem:Solving for C
+            // Need to use this to generate points of contact on the line
             let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
                 + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
 
@@ -127,8 +155,32 @@ function connect() {
                 ctx.stroke();
 
                 // scenario where the mouse touches the line
+let linepoints = []
+let linepoint = {
+
+midpointx: (particlesArray[a].x + particlesArray[b].x)/2,
+midpointy: (particlesArray[a].y + particlesArray[b].y)/2
+}
+
+// lineArray.push(new Line(linepoint.midpointx,linepoint.midpointy, opacityValue))
+
+// console.log(linepoint.midpointx + " " + linepoint.midpointy)
+// console.log(opacityValue)
+
+// lineArray = lineArray.filter((line) => {
+//     return line.opacity > 0.2
+
+// })
+
+// Starting on a way to cross a line
+// if(mouse.x )
+// console.log("YAY!!!")
+// console.log(lineArray.length)
+
 
             }
+
+
         }
     }
 
@@ -149,7 +201,10 @@ function init() {
         let color = '#8C5523';
 
         particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+
+    
     }
+// Gonna make each particle change in size a bit
 
 }
 
@@ -165,10 +220,30 @@ function animate() {
         particlesArray[i].update()
     }
     connect();
+
+
 }
 
+function gameOver(){
+    canvas.style.background = 'hsl(0, 0%, 100%)';
+    pts.style.top = '50%'
+    pts.style.left = '50%'
 
+    active = false
+    console.log(points)
+    this.directionX = this.directionX/2
+    this.directionX = this.directionX/2
 
+    particlesArray = particlesArray.filter((particles) => { 
+        return particles.directionX == this.directionX
+
+    })
+    particlesArray.forEach((particle) => { 
+         particle.color = "#000000"
+
+    })
+
+}
 
 // resize event
 window.addEventListener('resize', function () {
@@ -185,5 +260,29 @@ window.addEventListener('mouseout',
     })
 
 
+function start(){
 init();
 animate();
+
+}
+
+
+start()
+
+
+// Point Counter
+let intervalId = setInterval(incrementPoints, 1000);
+
+function incrementPoints() {
+  points++;
+  pts.innerText = points
+//   console.log(`Points: ${points}`);
+  
+  // Stop incrementing points after 10 seconds
+  if (!active) {
+
+    clearInterval(intervalId);
+    pts.innerText = "Gameover"
+    strt.innerText = "retry"
+  }
+}
