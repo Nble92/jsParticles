@@ -11,7 +11,20 @@
 
 <body>
 
-    <canvas id="canvas1"></canvas>
+
+    <div id="audio-container">
+        <!-- The canvas elemeent is what allow us to draw on the screen -->
+                <audio id="audio1" controls>
+                    <source src="Assets\Deathsound.wav"" type="audio/mpeg">
+                </audio>
+                <input type="file" id='fileupload' accept='audio/*'>
+            </div>
+    
+    <div id="canvas-container">
+        <div id="points"></div>
+        
+        <div onclick="start()" id="start"></div>
+        <canvas id="canvas1"></canvas>
     <script src="script.js"></script>
 </body>
 
