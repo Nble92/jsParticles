@@ -3,7 +3,8 @@
 So this is a small application that generates particles, displays them to a screen and connects lines to neighboring particles.
 
 jsParticles Documentation
-script.js is a JavaScript file that creates a particle animation on an HTML canvas and provides audio analysis functionality. This documentation will provide an overview of the code structure, main functions, and event listeners used in the script.
+
+this project creates a particle animation on an HTML canvas and provides audio analysis functionality. This documentation will provide an overview of the code structure, main functions, and event listeners used in the script.
 
 Code Structure
 The code can be divided into the following sections:
